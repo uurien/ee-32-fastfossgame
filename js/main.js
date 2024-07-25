@@ -10,8 +10,8 @@
         physics: {
             default: 'arcade',
             arcade: {
-                gravity: { y: 300 },
-                debug: false
+                gravity: { y: 1200 },
+                debug: true
             }
         },
         scene: {
@@ -31,9 +31,9 @@
     let player;
     let spaceBar;
     let speed = 0.1;
-
+    const platforms = []
     function preload() {
-        this.load.image('sky', 'assets/sky.png');
+        this.load.image('background_0', 'assets/background_0.jpg');
         // this.load.image('sky', 'assets/Fondo_noche.ase');
         this.load.image('player', 'assets/player.png');  // Asegúrate de tener esta imagen en la carpeta assets
         this.load.image('ground', 'assets/player.png');  // Asegúrate de tener esta imagen en la carpeta assets
@@ -41,7 +41,7 @@
     }
 
     function create() {
-        background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'sky');
+        background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'background_0');
         background.setOrigin(0, 0);
         background.setScrollFactor(0);
 
@@ -51,7 +51,8 @@
         this.physics.add.existing(ground, true);
 
 
-        player = this.physics.add.sprite(200, 538, 'player');
+        player = this.physics.add.sprite(200, 238, 'player');
+        player.body.setFriction(0, 0);
         player.setBounce(0);
         player.setCollideWorldBounds(true);
         this.physics.add.collider(player, ground);
@@ -59,17 +60,35 @@
 
         spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        const addPlatform = () => {
+            const platform = this.physics.add.sprite( 1200, 500, 'ground');
+            platform.setImmovable(true);
+            platform.body.allowGravity = false;
+            platform.setVelocityX(-200)
+            platform.displayWidth = 300;
+            platform.body.setFriction(0, 0);
+            // platform.body.setSize(300, platform.displayHeight); // Ajustar el cuerpo de colisión
+            this.physics.add.collider(player, platform);
+
+            platforms.push(platform)
+        }
+        addPlatform()
+        setInterval(addPlatform, 5_000)
+
     }
 
     function update() {
         background.tilePositionX += speed;
-
+        // for (let i = 0; i < platforms.length; i++) {
+        //     const platform = platforms[i]
+        //     // console.log(platform.tilePositionX)
+        //     // platform.tilePositionX += speed;
+        // }
         player.setVelocityX(0);
 
-        console.log(`${JSON.stringify(player.body.touching)}`)
         if (spaceBar.isDown && player.body.touching.down) {
             console.log('ey')
-            player.setVelocityY(-330);  // Ajusta el valor para cambiar la altura del salto
+            player.setVelocityY(-530);  // Ajusta el valor para cambiar la altura del salto
         }
     }
 })()
