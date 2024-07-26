@@ -240,12 +240,13 @@
         }
 
         function create() {
+            points = 0
             pointsInterval = setInterval(() => {
                 points++
                 pointsElement.innerText = `Score: ${points}`
             }, 50)
             speedInterval = setInterval(() => {
-                speed *= 1.2
+                speed *= 1.1
             }, 5_000)
             this.physics.world.roundPixels = true;
 
