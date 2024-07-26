@@ -19,14 +19,15 @@
 
     const platformLevelHeight = 100;
     const platformLevels = 6;
-    let currentLevel = 0;
 
     function start () {
+        let currentLevel = 0;
+
         function getTimeoutMs () {
             return 4000 - (speed * 5)
         }
 
-        currentLevel = 0;
+
         if (window.GAME.currentGame) {
             timeoutsToCleanOnDestroy.forEach(clearTimeout)
             window.GAME.currentGame.destroy(true)
@@ -53,9 +54,6 @@
 
         const game = new Phaser.Game(config);
         window.GAME.currentGame = game
-        // window.GAME.start = () => {
-        //     document.getElementById('main-menu').classList.add('hidden')
-        // }
         window.GAME.gameOver = () => {
             if (backgroundMusic) {
                 backgroundMusic.stop();
@@ -71,6 +69,12 @@
         let speed = 20;
         let backgroundMusic;
         const platforms = []
+
+        const playerStatus = {
+            inSecondJump: false,
+            currentLevel: 0
+        }
+
         function preload() {
             this.load.image('background_0', 'assets/background_0.jpg');
             this.load.image('background_1', 'assets/background_1.png');
@@ -116,7 +120,11 @@
             player.setBounce(0);
             player.setCollideWorldBounds(true);
             player.name = 'player'
-            this.physics.add.collider(player, ground);
+            // this.physics.add.collider(player, ground);
+            this.physics.add.collider(player, ground, (player, ground) => {
+                playerStatus.inSecondJump = false
+                playerStatus.currentLevel = 0
+            });
 
 
             spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -126,7 +134,7 @@
                     timeoutsToCleanOnDestroy.push(setTimeout(addPlatform, getTimeoutMs()))
                     return
                 }
-                const playerLevel = Math.floor((600 - player.y) / platformLevelHeight)
+                const playerLevel = playerStatus.currentLevel || 0
                 const rand = 3 * (Math.random() - 0.5)
                 let platformLevel = playerLevel + Math.floor(rand)
                 platformLevel = platformLevel < 0 ? 0: platformLevel;
@@ -141,6 +149,11 @@
                 this.physics.add.collider(player, platform, () => {
                     if (player.body.touching.right) {
                         GAME.gameOver()
+                        return
+                    }
+                    if (player.body.touching.down) {
+                        playerStatus.currentLevel = platformLevel
+                        playerStatus.inSecondJump = false
                     }
                 });
 
@@ -168,8 +181,17 @@
             moveBackgrounds()
             player.setVelocityX(0);
 
-            if (spaceBar.isDown && player.body.touching.down) {
+            if (spaceBar.isDown && !playerStatus.jumpBlocked && !playerStatus.inSecondJump) {
+                playerStatus.jumpBlocked = true
+                if (!player.body.touching.down) {
+                    playerStatus.inSecondJump = true
+                }
                 player.setVelocityY(-800);
+
+                setTimeout(() => {
+                    playerStatus.jumpBlocked = false
+                }, 300)
+
                 player.anims.play('rotate');
             }
         }
