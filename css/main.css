@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+.ui {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    background: url('../assets/screenshot.png');
+    width: 800px;
+    height: 600px;
+}
+
+.play {
+    display: block;
+    cursor: pointer;
+    background: #343064;
+    border: 2px solid #2e2467;
+    color: white;
+    font-size: 20px;
+    padding: 8px 32px;
+    font-weight: bold;
+    z-index: 1001;
+}
+
+.hidden {
+    display: none;
+}
