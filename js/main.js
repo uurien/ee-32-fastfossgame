@@ -18,7 +18,8 @@
     let timeoutsToCleanOnDestroy = []
 
     const platformLevelHeight = 100;
-    const platformLevels = 6;
+    let points = 0
+    let pointsElement
 
     function playerPlatformColliderCallback (self, player, playerStatus) {
         if (player.body.touching.right) {
@@ -122,7 +123,7 @@
             section.aliens = [ alien ];
         }
 
-        sections.push({ platforms, level })
+        sections.push(section)
     }
 
     function createFirstSection (self, sections, playerSprite, playerStatus, speed) {
@@ -155,6 +156,15 @@
 
        while (sections.length > 0 && getLastSectionRightPoint(sections) < 1200) {
            createSection(self, sections, playerSprite, playerStatus, speed, sections[sections.length - 1])
+       }
+       for (let i = 0; i < sections.length; i++) {
+           const section = sections[i]
+           section.platforms.forEach(platform => {
+               platform.setVelocity(-20 * speed, 0)
+           })
+           section.aliens?.forEach(alien => {
+               alien.setVelocity(-22 * speed, 0)
+           })
        }
     }
 
@@ -190,11 +200,15 @@
         const game = new Phaser.Game(config);
         window.GAME.currentGame = game
         window.GAME.gameOver = () => {
+            clearInterval(pointsInterval)
+            clearInterval(speedInterval)
+            document.getElementById('points_summary').innerText = `Score: ${points}`
             if (backgroundMusic) {
                 backgroundMusic.stop();
             }
             game.pause();
             setTimeout(() => {
+                pointsElement.classList.add('hidden')
                 document.getElementById('game-over').classList.remove('hidden')
             }, 300)
         }
@@ -205,6 +219,8 @@
         let spaceBar;
         let speed = 20;
         let backgroundMusic;
+        let pointsInterval
+        let speedInterval
         const sections = []
 
         const playerStatus = {
@@ -224,6 +240,13 @@
         }
 
         function create() {
+            pointsInterval = setInterval(() => {
+                points++
+                pointsElement.innerText = `Score: ${points}`
+            }, 50)
+            speedInterval = setInterval(() => {
+                speed *= 1.2
+            }, 5_000)
             this.physics.world.roundPixels = true;
 
             // this.scene.pause()
@@ -270,10 +293,13 @@
             spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
             createFirstSection(this, sections, player, playerStatus, speed)
-
+            pointsElement = document.getElementById('points')
+            pointsElement.innerText = points
+            pointsElement.classList.remove('hidden')
             document.querySelectorAll('.ui').forEach(element => {
                 element.classList.add('hidden')
             })
+
 
             backgroundMusic = this.sound.add('background_music');
             backgroundMusic.play({ loop: true });

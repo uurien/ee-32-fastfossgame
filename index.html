@@ -5,6 +5,9 @@
     <title>ee32 - fast foss game</title>
     <link rel="stylesheet" href="css/main.css">
     <script src="vendor/phaser.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="ui" id="main-menu">
@@ -25,10 +28,14 @@
         </div>
     </div>
     <div class="ui hidden game-over" id="game-over">
-        <h1>Game over</h1>
-
-        <button class="play" onclick="GAME.start()">Try again</button>
+        <a href="#" class="about-button small" onclick="GAME.showAbout()">?</a>
+        <div class="content">
+            <h1>Game over</h1>
+            <div id="points_summary" class="points_summary"></div>
+            <button class="play" onclick="GAME.start()">Try again</button>
+        </div>
     </div>
+    <div class="points hidden" id="points">123</div>
     <script src="js/main.js"></script>
 </body>
 </html>

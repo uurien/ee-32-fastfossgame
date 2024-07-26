@@ -1,3 +1,8 @@
+* {
+    font-family: "Teko", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
 body {
     margin: 0;
     padding: 0;
@@ -34,7 +39,6 @@ button {
     color: white;
     font-size: 20px;
     padding: 8px 32px;
-    font-weight: bold;
     margin: 8px;
 }
 button.small {
@@ -60,6 +64,20 @@ button.small {
     justify-content: center;
     color: white;
     background: #343064;
+}
 
+.points {
+    position: absolute;
+    text-align: right;
+    width: 200px;
+    color: white;
+    top: 8px;
+    left: 592px;
+    z-index: 20000;
+    text-align: right;
+    font-size: 20px;
+}
 
+.points_summary {
+    font-size: 20px;
 }
