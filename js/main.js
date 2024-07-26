@@ -49,6 +49,24 @@
         return platform;
     }
 
+    function createAlien (self, playerSprite, playerStatus, speed, level, x = 1150) {
+        const y = 600 - (level * platformLevelHeight) - 80
+        const deltaX = Math.floor(50 + (Math.random() * 100))
+        const deltaY = Math.floor(Math.random() * 70)
+        const alien = self.physics.add.sprite(x + deltaX, y - deltaY, 'alien');
+        alien.body.allowGravity = false;
+        alien.setVelocityX(-22 * speed)
+        // platform.displayWidth = width;
+        alien.body.setFriction(0, 0);
+        alien.anims.play('alienmovement')
+
+        self.physics.add.collider(playerSprite, alien, () => {
+            GAME.gameOver()
+        });
+
+        return alien;
+    }
+
     function createSpikes (self, playerSprite, playerStatus, speed, level, x = 1150) {
         const width = 300
         const y = 600 - (level * platformLevelHeight) - 48
@@ -95,8 +113,13 @@
         const rand = Math.random()
         const hasSpikes = (previousSection.platforms.length > 0 && rand < .7) || rand < .4
         if (hasSpikes) {
-            const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0, newX)
-            platforms.push(spikes)
+            platforms.push(createSpikes(self, playerSprite, playerStatus, speed, 0, newX))
+        }
+        const section = { platforms, level }
+        if (Math.random() < .4) {
+            // TODO add marcianito
+            const alien = createAlien(self, playerSprite, playerStatus, speed, level)
+            section.aliens = [ alien ];
         }
 
         sections.push({ platforms, level })
@@ -126,7 +149,8 @@
     function updatePlatforms (self, playerSprite, playerStatus, sections, speed) {
        while (sections.length > 0 && getFirstSectionRightPoint(sections) < 0) {
            const section = sections.shift();
-           section.platforms.forEach(platform => platform.destroy() )
+           section.platforms.forEach(platform => platform.destroy())
+           section.aliens?.forEach(alien => alien.destroy())
        }
 
        while (sections.length > 0 && getLastSectionRightPoint(sections) < 1200) {
@@ -197,6 +221,7 @@
             this.load.image('background_2', 'assets/background_2.png');
             this.load.image('spike', 'assets/spike.png');
             this.load.spritesheet('player', 'assets/player-jump.png', { frameWidth: 40, frameHeight: 40 });
+            this.load.spritesheet('alien', 'assets/alien.png', { frameWidth: 27, frameHeight: 29 });
             this.load.image('ground', 'assets/ground.png');
             this.load.audio('background_music', 'assets/background_music.mp3');
         }
@@ -257,6 +282,13 @@
                 frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
                 frameRate: 25,
                 repeat: 1
+            });
+
+            this.anims.create({
+                key: 'alienmovement',
+                frames: this.anims.generateFrameNumbers('alien', { start: 0, end: 1 }),
+                frameRate: 3,
+                repeat: -1
             });
         }
 
