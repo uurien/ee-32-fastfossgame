@@ -95,7 +95,7 @@
         const rand = Math.random()
         const hasSpikes = (previousSection.platforms.length > 0 && rand < .7) || rand < .4
         if (hasSpikes) {
-            const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0)
+            const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0, newX)
             platforms.push(spikes)
         }
 
@@ -156,7 +156,7 @@
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 2200 },
-                    debug: false
+                    debug: true
                 }
             },
             scene: {
