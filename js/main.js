@@ -20,10 +20,10 @@
             update: update
         }
     };
-    //
-    // setInterval(() => {
-    //     speed += .2;
-    // }, 5000)
+
+    setInterval(() => {
+        speed += .2;
+    }, 5000)
 
     const game = new Phaser.Game(config);
     const backgrounds = [];
@@ -75,6 +75,7 @@
         player.body.setFriction(0, 0);
         player.setBounce(0);
         player.setCollideWorldBounds(true);
+        player.name = 'player'
         this.physics.add.collider(player, ground);
 
 
@@ -88,7 +89,26 @@
             platform.displayWidth = 300;
             platform.body.setFriction(0, 0);
             // platform.body.setSize(300, platform.displayHeight); // Ajustar el cuerpo de colisión
-            this.physics.add.collider(player, platform);
+            let i = 0
+            this.physics.add.collider(player, platform, (...args) => {
+                let player, platform
+                for (let i = 0; i < 2; i++) {
+                    if (args[i].name === 'player') {
+                        player = args[i]
+                    } else {
+                        platform = args[i]
+                    }
+                }
+                if (i === 0) {
+                    console.log(player)
+                    i++
+                }
+
+                if (player.body.touching.right) {
+                    this.scene.pause();
+                }
+
+            });
 
             platforms.push(platform)
         }
@@ -107,7 +127,6 @@
         player.setVelocityX(0);
 
         if (spaceBar.isDown && player.body.touching.down) {
-            console.log('ey')
             player.setVelocityY(-530);  // Ajusta el valor para cambiar la altura del salto
         }
     }
