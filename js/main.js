@@ -260,9 +260,21 @@
             });
         }
 
+        function syncSections (self, sections) {
+            for (let i = 1; i < sections.length; i++) {
+                const prevSection = sections[i-1]
+                const section = sections[i]
+                const prevPlatform = prevSection.platforms[0]
+                section.platforms.forEach(platform => {
+                    platform.x = prevPlatform.x + prevPlatform.displayWidth
+                })
+            }
+        }
+
         function update() {
             moveBackgrounds()
             updatePlatforms(this,  player, playerStatus, sections, speed)
+            syncSections(this, sections)
 
             player.setVelocityX(0);
 
