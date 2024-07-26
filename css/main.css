@@ -3,6 +3,25 @@
     font-optical-sizing: auto;
     font-style: normal;
 }
+
+.main_container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #a4a2c4;
+}
+
+.main_container__content {
+    width: 800px;
+    height: 600px;
+    position: relative;
+}
+
 body {
     margin: 0;
     padding: 0;
