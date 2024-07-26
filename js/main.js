@@ -20,6 +20,122 @@
     const platformLevelHeight = 100;
     const platformLevels = 6;
 
+    function playerPlatformColliderCallback (self, player, playerStatus) {
+        if (player.body.touching.right) {
+            GAME.gameOver()
+            return
+        }
+        if (player.body.touching.down) {
+            playerStatus.inSecondJump = false
+        }
+    }
+
+    function createPlatform (self, playerSprite, playerStatus, speed, level) {
+        const x = 1150
+        const width = 300
+        const y = 600 - (level * platformLevelHeight) - 48
+
+        const platform = self.physics.add.sprite( x, y, 'ground');
+        platform.setImmovable(true);
+        platform.body.allowGravity = false;
+        platform.setVelocityX(-20 * speed)
+        platform.displayWidth = width;
+        platform.body.setFriction(0, 0);
+
+
+        self.physics.add.collider(playerSprite, platform, () => {
+            playerPlatformColliderCallback(self, playerSprite, playerStatus)
+        });
+
+        return platform;
+    }
+
+    function createSpikes (self, playerSprite, playerStatus, speed, level) {
+        const x = 1150
+        const width = 300
+        const y = 600 - (level * platformLevelHeight) - 48
+
+        const platform = self.physics.add.sprite( x, y, 'spikes');
+        platform.setImmovable(true);
+        platform.body.allowGravity = false;
+        platform.setVelocityX(-20 * speed)
+        platform.displayWidth = width;
+        platform.displayHeight = 32;
+        platform.body.setFriction(0, 0);
+
+
+        self.physics.add.collider(playerSprite, platform, () => {
+            GAME.gameOver()
+        });
+
+        return platform;
+    }
+
+    function createSection (self, sections, playerSprite, playerStatus, speed, previousSection) {
+        const platforms = []
+        let level
+        const previousLevel = previousSection.level
+
+        if (!previousLevel || previousLevel <= 1) {
+            level = Math.random() < .5 ? previousLevel : previousLevel + 1;
+        } else {
+            const rand = Math.random();
+            if (rand < (1/3)) {
+                level = previousLevel - 1
+            } else if (rand < (2/3)) {
+                level = previousLevel
+            } else {
+                level = previousLevel + 1
+            }
+        }
+
+        level = level > 4 ? 4 : level;
+
+        const platform = createPlatform(self, playerSprite, playerStatus, speed, level)
+        platforms.push(platform)
+
+        const rand = Math.random()
+        const hasSpikes = (previousSection.platforms.length > 0 && rand < .7) || rand < .4
+        if (hasSpikes) {
+            const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0)
+            platforms.push(spikes)
+        }
+
+        sections.push({ platforms, level })
+    }
+
+    function createFirstSection (self, sections, playerSprite, playerStatus, speed) {
+        const platforms = []
+        const platform = createPlatform(self, playerSprite, playerStatus, speed, 1)
+        const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0)
+
+        platforms.push(platform)
+        platforms.push(spikes)
+
+        sections.push({ platforms, level: 1 })
+    }
+
+    function getFirstSectionRightPoint (sections) {
+        const platform = sections[0].platforms[0]
+        return platform.x + platform.displayWidth
+    }
+
+    function getLastSectionRightPoint (sections) {
+        const platform = sections[sections.length - 1].platforms[0]
+        return platform.x + platform.displayWidth
+    }
+
+    function updatePlatforms (self, playerSprite, playerStatus, sections, speed) {
+       while (sections.length > 0 && getFirstSectionRightPoint(sections) < 0) {
+           const section = sections.shift();
+           section.platforms.forEach(platform => platform.destroy() )
+       }
+
+       while (sections.length > 0 && getLastSectionRightPoint(sections) < 1200) {
+           createSection(self, sections, playerSprite, playerStatus, speed, sections[sections.length - 1])
+       }
+    }
+
     function start () {
         let currentLevel = 0;
 
@@ -69,6 +185,8 @@
         let speed = 20;
         let backgroundMusic;
         const platforms = []
+        const sections = []
+        let addPlatform
 
         const playerStatus = {
             inSecondJump: false,
@@ -108,7 +226,6 @@
                 speedFactor: 0.06
             })
 
-    //        grown = this.physics.add.staticImage(0, 568, 'platform').setScale(2).refreshBody();
             ground = this.add.tileSprite(0, this.sys.canvas.height - 32, this.sys.canvas.width, 32, 'ground');
             ground.setOrigin(0, 0);
             this.physics.add.existing(ground, true);
@@ -129,40 +246,7 @@
 
             spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-            const addPlatform = () => {
-                if (Math.random() < .05) {
-                    timeoutsToCleanOnDestroy.push(setTimeout(addPlatform, getTimeoutMs()))
-                    return
-                }
-                const playerLevel = playerStatus.currentLevel || 0
-                const rand = 3 * (Math.random() - 0.5)
-                let platformLevel = playerLevel + Math.floor(rand)
-                platformLevel = platformLevel < 0 ? 0: platformLevel;
-                const y = 600 - (platformLevel * platformLevelHeight) - 48
-                const platform = this.physics.add.sprite( 1200, y, 'ground');
-                platform.setImmovable(true);
-                platform.body.allowGravity = false;
-                platform.setVelocityX(-20*speed)
-                platform.displayWidth = 300;
-                platform.body.setFriction(0, 0);
-                // platform.body.setSize(300, platform.displayHeight); // Ajustar el cuerpo de colisión
-                this.physics.add.collider(player, platform, () => {
-                    if (player.body.touching.right) {
-                        GAME.gameOver()
-                        return
-                    }
-                    if (player.body.touching.down) {
-                        playerStatus.currentLevel = platformLevel
-                        playerStatus.inSecondJump = false
-                    }
-                });
-
-                platforms.push(platform)
-
-
-                timeoutsToCleanOnDestroy.push(setTimeout(addPlatform, getTimeoutMs()))
-            }
-            addPlatform()
+            createFirstSection(this, sections, player, playerStatus, speed)
 
             document.getElementById('main-menu').classList.add('hidden')
 
@@ -179,6 +263,8 @@
 
         function update() {
             moveBackgrounds()
+            updatePlatforms(this,  player, playerStatus, sections, speed)
+
             player.setVelocityX(0);
 
             if (spaceBar.isDown && !playerStatus.jumpBlocked && !playerStatus.inSecondJump) {
