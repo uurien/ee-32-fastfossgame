@@ -30,8 +30,7 @@
         }
     }
 
-    function createPlatform (self, playerSprite, playerStatus, speed, level) {
-        const x = 1150
+    function createPlatform (self, playerSprite, playerStatus, speed, level, x = 1150) {
         const width = 300
         const y = 600 - (level * platformLevelHeight) - 48
 
@@ -50,12 +49,11 @@
         return platform;
     }
 
-    function createSpikes (self, playerSprite, playerStatus, speed, level) {
-        const x = 1150
+    function createSpikes (self, playerSprite, playerStatus, speed, level, x = 1150) {
         const width = 300
         const y = 600 - (level * platformLevelHeight) - 48
 
-        const platform = self.physics.add.sprite( x, y, 'spikes');
+        const platform = self.physics.add.sprite( x, y, 'spike');
         platform.setImmovable(true);
         platform.body.allowGravity = false;
         platform.setVelocityX(-20 * speed)
@@ -90,8 +88,8 @@
         }
 
         level = level > 4 ? 4 : level;
-
-        const platform = createPlatform(self, playerSprite, playerStatus, speed, level)
+        const newX = previousSection.platforms[0].x + previousSection.platforms[0].displayWidth
+        const platform = createPlatform(self, playerSprite, playerStatus, speed, level, newX)
         platforms.push(platform)
 
         const rand = Math.random()
@@ -106,8 +104,8 @@
 
     function createFirstSection (self, sections, playerSprite, playerStatus, speed) {
         const platforms = []
-        const platform = createPlatform(self, playerSprite, playerStatus, speed, 1)
-        const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0)
+        const platform = createPlatform(self, playerSprite, playerStatus, speed, 1, 1200)
+        const spikes = createSpikes(self, playerSprite, playerStatus, speed, 0, 1200)
 
         platforms.push(platform)
         platforms.push(spikes)
@@ -197,6 +195,7 @@
             this.load.image('background_0', 'assets/background_0.jpg');
             this.load.image('background_1', 'assets/background_1.png');
             this.load.image('background_2', 'assets/background_2.png');
+            this.load.image('spike', 'assets/spike.png');
             this.load.spritesheet('player', 'assets/player-jump.png', { frameWidth: 40, frameHeight: 40 });
             this.load.image('ground', 'assets/ground.png');
             this.load.audio('background_music', 'assets/background_music.mp3');
