@@ -217,6 +217,7 @@
         const backgrounds = [];
         let ground;
         let player;
+        let smoke;
         let spaceBar;
         let speed = 20;
         let backgroundMusic;
@@ -234,6 +235,7 @@
             this.load.image('background_1', 'assets/background_1.png');
             this.load.image('background_2', 'assets/background_2.png');
             this.load.image('spike', 'assets/spike.png');
+            this.load.image('smoke', 'assets/smoke.png');
             this.load.spritesheet('player', 'assets/player-jump.png', { frameWidth: 40, frameHeight: 40 });
             this.load.spritesheet('alien', 'assets/alien.png', { frameWidth: 27, frameHeight: 29 });
             this.load.image('ground', 'assets/ground.png');
@@ -279,12 +281,18 @@
             this.physics.add.existing(ground, true);
 
 
+            smoke = this.physics.add.sprite(178, 537, 'smoke');
+            smoke.body.allowGravity = false;
+            this.physics.add.collider(smoke, ground)
+
             player = this.physics.add.sprite(200, 538, 'player');
             player.body.setFriction(0, 0);
             player.setBodySize(32, 32)
             player.setBounce(0);
             // player.setCollideWorldBounds(true);
             player.name = 'player'
+
+
             // this.physics.add.collider(player, ground);
             this.physics.add.collider(player, ground, (player, ground) => {
                 playerStatus.inSecondJump = false
@@ -351,6 +359,15 @@
                 }, 300)
 
                 player.anims.play('rotate');
+            }
+
+            if (player.body.touching.down) {
+                smoke.visible = true
+                smoke.x = player.x - 24 + 2
+                smoke.y = player.y + 8
+
+            } else {
+                smoke.visible = false
             }
         }
 
