@@ -235,8 +235,8 @@
             this.load.image('background_1', 'assets/background_1.png');
             this.load.image('background_2', 'assets/background_2.png');
             this.load.image('spike', 'assets/spike.png');
-            this.load.image('smoke', 'assets/smoke.png');
             this.load.spritesheet('player', 'assets/player-jump.png', { frameWidth: 40, frameHeight: 40 });
+            this.load.spritesheet('smoke', 'assets/smoke_sprite.png', { frameWidth: 20, frameHeight: 16 });
             this.load.spritesheet('alien', 'assets/alien.png', { frameWidth: 27, frameHeight: 29 });
             this.load.image('ground', 'assets/ground.png');
             this.load.audio('background_music', 'assets/background_music.mp3');
@@ -327,6 +327,19 @@
                 frameRate: 3,
                 repeat: -1
             });
+
+            this.anims.create({
+                key: 'smokemovement',
+                frames: [
+                    { key: 'smoke', frame: 0 },
+                    { key: 'smoke', frame: 1 },
+                    { key: 'smoke', frame: 2 },
+                    { key: 'smoke', frame: 1 }
+                ],
+                frameRate: 9,
+                repeat: -1
+            });
+            smoke.anims.play('smokemovement')
         }
 
         function syncSections (self, sections) {
