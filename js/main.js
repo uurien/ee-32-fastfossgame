@@ -159,13 +159,6 @@
     }
 
     function start () {
-        let currentLevel = 0;
-
-        function getTimeoutMs () {
-            return 4000 - (speed * 5)
-        }
-
-
         if (window.GAME.currentGame) {
             timeoutsToCleanOnDestroy.forEach(clearTimeout)
             window.GAME.currentGame.destroy(true)
@@ -201,7 +194,9 @@
                 backgroundMusic.stop();
             }
             game.pause();
-            document.getElementById('main-menu').classList.remove('hidden')
+            setTimeout(() => {
+                document.getElementById('game-over').classList.remove('hidden')
+            }, 300)
         }
 
         const backgrounds = [];
@@ -276,7 +271,9 @@
 
             createFirstSection(this, sections, player, playerStatus, speed)
 
-            document.getElementById('main-menu').classList.add('hidden')
+            document.querySelectorAll('.ui').forEach(element => {
+                element.classList.add('hidden')
+            })
 
             backgroundMusic = this.sound.add('background_music');
             backgroundMusic.play({ loop: true });
