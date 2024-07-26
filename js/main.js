@@ -123,16 +123,13 @@
 
             const addPlatform = () => {
                 if (Math.random() < .05) {
-                    console.log('do not add')
                     timeoutsToCleanOnDestroy.push(setTimeout(addPlatform, getTimeoutMs()))
                     return
                 }
                 const playerLevel = Math.floor((600 - player.y) / platformLevelHeight)
                 const rand = 3 * (Math.random() - 0.5)
-                console.log('rand', rand)
                 let platformLevel = playerLevel + Math.floor(rand)
                 platformLevel = platformLevel < 0 ? 0: platformLevel;
-                console.log(platformLevel)
                 const y = 600 - (platformLevel * platformLevelHeight) - 48
                 const platform = this.physics.add.sprite( 1200, y, 'ground');
                 platform.setImmovable(true);
