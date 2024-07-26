@@ -75,7 +75,7 @@
             this.load.image('background_0', 'assets/background_0.jpg');
             this.load.image('background_1', 'assets/background_1.png');
             this.load.image('background_2', 'assets/background_2.png');
-            this.load.image('player', 'assets/player.png');
+            this.load.spritesheet('player', 'assets/player-jump.png', { frameWidth: 40, frameHeight: 40 });
             this.load.image('ground', 'assets/ground.png');
             this.load.audio('background_music', 'assets/background_music.mp3');
         }
@@ -112,6 +112,7 @@
 
             player = this.physics.add.sprite(200, 538, 'player');
             player.body.setFriction(0, 0);
+            player.setBodySize(32, 32)
             player.setBounce(0);
             player.setCollideWorldBounds(true);
             player.name = 'player'
@@ -157,6 +158,13 @@
 
             backgroundMusic = this.sound.add('background_music');
             backgroundMusic.play({ loop: true });
+
+            this.anims.create({
+                key: 'rotate',
+                frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+                frameRate: 25,
+                repeat: 1
+            });
         }
 
         function update() {
@@ -164,7 +172,8 @@
             player.setVelocityX(0);
 
             if (spaceBar.isDown && player.body.touching.down) {
-                player.setVelocityY(-800);  // Ajusta el valor para cambiar la altura del salto
+                player.setVelocityY(-800);
+                player.anims.play('rotate');
             }
         }
 
