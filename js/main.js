@@ -37,7 +37,7 @@
         const platform = self.physics.add.sprite( x, y, 'ground');
         platform.setImmovable(true);
         platform.body.allowGravity = false;
-        platform.setVelocityX(-20 * speed)
+        platform.setVelocity(-20 * speed, 0)
         platform.displayWidth = width;
         platform.body.setFriction(0, 0);
 
@@ -74,7 +74,7 @@
         const platform = self.physics.add.sprite( x, y, 'spike');
         platform.setImmovable(true);
         platform.body.allowGravity = false;
-        platform.setVelocityX(-20 * speed)
+        platform.setVelocityX(-20 * speed, 0)
         platform.displayWidth = width;
         platform.displayHeight = 32;
         platform.body.setFriction(0, 0);
@@ -180,8 +180,12 @@
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 2200 },
-                    debug: true
+                    debug: false
                 }
+            },
+            render: {
+                antialias: true,
+                roundPixels: true
             },
             scene: {
                 preload: preload,
@@ -198,17 +202,15 @@
             }
             game.pause();
             document.getElementById('main-menu').classList.remove('hidden')
-
         }
+
         const backgrounds = [];
         let ground;
         let player;
         let spaceBar;
         let speed = 20;
         let backgroundMusic;
-        const platforms = []
         const sections = []
-        let addPlatform
 
         const playerStatus = {
             inSecondJump: false,
@@ -227,6 +229,8 @@
         }
 
         function create() {
+            this.physics.world.roundPixels = true;
+
             // this.scene.pause()
             let background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'background_0');
             background.setOrigin(0, 0);
@@ -259,7 +263,7 @@
             player.body.setFriction(0, 0);
             player.setBodySize(32, 32)
             player.setBounce(0);
-            player.setCollideWorldBounds(true);
+            // player.setCollideWorldBounds(true);
             player.name = 'player'
             // this.physics.add.collider(player, ground);
             this.physics.add.collider(player, ground, (player, ground) => {
