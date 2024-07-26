@@ -1,7 +1,19 @@
 (function () {
     window.GAME = {
         objects: [],
-        start
+        start,
+        mainMenu: () => {
+            document.querySelectorAll('.ui').forEach(element => {
+                element.classList.add('hidden')
+            })
+            document.getElementById('main-menu').classList.remove('hidden')
+        },
+        showAbout: () => {
+            document.querySelectorAll('.ui').forEach(element => {
+                element.classList.add('hidden')
+            })
+            document.getElementById('about').classList.remove('hidden')
+        }
     }
     let intervalsToCleanOnDestroy = []
 
@@ -102,20 +114,10 @@
                 platform.displayWidth = 300;
                 platform.body.setFriction(0, 0);
                 // platform.body.setSize(300, platform.displayHeight); // Ajustar el cuerpo de colisión
-                this.physics.add.collider(player, platform, (...args) => {
-                    let player, platform
-                    for (let i = 0; i < 2; i++) {
-                        if (args[i].name === 'player') {
-                            player = args[i]
-                        } else {
-                            platform = args[i]
-                        }
-                    }
-
+                this.physics.add.collider(player, platform, () => {
                     if (player.body.touching.right) {
                         GAME.gameOver()
                     }
-
                 });
 
                 platforms.push(platform)

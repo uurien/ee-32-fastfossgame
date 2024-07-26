@@ -16,7 +16,13 @@ body {
     height: 600px;
 }
 
-.play {
+.content {
+    background: rgba(0, 0, 0, .5);
+    padding: 16px 48px;
+    color: #eee;
+    text-align: center;
+}
+button {
     display: block;
     cursor: pointer;
     background: #343064;
@@ -25,9 +31,31 @@ body {
     font-size: 20px;
     padding: 8px 32px;
     font-weight: bold;
-    z-index: 1001;
+    margin: 8px;
+}
+button.small {
+    padding: 6px 18px;
+    font-size: .8em;
 }
 
 .hidden {
     display: none;
+}
+.about-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    text-decoration: none;
+    width: 24px;
+    height: 24px;
+    border: 1px solid white;
+    border-radius: 12px;
+    background: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: #343064;
+
+
 }

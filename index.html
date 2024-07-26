@@ -8,7 +8,21 @@
 </head>
 <body>
     <div class="ui" id="main-menu">
+        <a href="#" class="about-button small" onclick="GAME.showAbout()">?</a>
         <button class="play" onclick="GAME.start()">Play</button>
+    </div>
+    <div class="ui hidden" id="about">
+        <div class="content">
+            <p>
+                Design:
+                <br /><b>Arkka0</b>
+            </p>
+            <p>
+                Coding:
+                <br /><b>Neiru</b>
+            </p>
+            <button class="small" onclick="GAME.mainMenu()">Back</button>
+        </div>
     </div>
     <script src="js/main.js"></script>
 </body>
