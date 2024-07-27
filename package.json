@@ -1,0 +1,22 @@
+{
+  "name": "ee-32-fastfossgame",
+  "version": "1.0.0",
+  "description": "Euskal Encounter 32 - Fast Foss Game",
+  "main": "index.html",
+  "scripts": {
+    "server": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uurien/ee-32-fastfossgame.git"
+  },
+  "author": "Arkka9 - Neiru",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/uurien/ee-32-fastfossgame/issues"
+  },
+  "homepage": "https://github.com/uurien/ee-32-fastfossgame#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
