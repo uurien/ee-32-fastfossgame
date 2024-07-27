@@ -100,3 +100,10 @@ button.small {
 .points_summary {
     font-size: 20px;
 }
+
+h1.title {
+    text-transform: uppercase;
+    color: #2e2467;
+    font-size: 48px;
+    margin: 0;
+}

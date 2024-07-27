@@ -35,7 +35,7 @@
         const width = 300
         const y = 600 - (level * platformLevelHeight) - 48
 
-        const platform = self.physics.add.sprite( x, y, 'ground');
+        const platform = self.physics.add.sprite( x, y, 'platform');
         platform.setImmovable(true);
         platform.body.allowGravity = false;
         platform.setVelocity(-20 * speed, 0)
@@ -238,6 +238,7 @@
             this.load.spritesheet('player', 'assets/player-jump.png', { frameWidth: 40, frameHeight: 40 });
             this.load.spritesheet('smoke', 'assets/smoke_sprite.png', { frameWidth: 20, frameHeight: 16 });
             this.load.spritesheet('alien', 'assets/alien.png', { frameWidth: 27, frameHeight: 29 });
+            this.load.image('platform', 'assets/platform.png');
             this.load.image('ground', 'assets/ground.png');
             this.load.audio('background_music', 'assets/background_music.mp3');
         }
