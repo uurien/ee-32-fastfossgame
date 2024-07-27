@@ -23,6 +23,11 @@ npm run server
 ## Jugar online
 El juego también esta [disponible online](https://www.ugaitz.info/ee-32-fastfossgame)
 
+## Cómo Jugar
+
+Pulsaremos el botón "Play" para empezar una partida, una vez empezada la partida, tan solo tendremos que pulsar la tecla Espacio para saltar.
+Si volvemos a pulsar espacio cuando Begitxo está en el aire, haremos un doble salto.
+
 ## Créditos
 - Arkka9: Diseño
 - Neiru: Desarrollo
